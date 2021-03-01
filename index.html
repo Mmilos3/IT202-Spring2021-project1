@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <!-- Required meta tags -->
+    <!-- Meta Tags -->
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -9,9 +9,24 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
     <title>Project 1</title>
+    
     <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0cy9QJ-JUEyB5lERlfQpEcpbJmbByoJM&v=weekly"></script>
-      
+
+    <style>
+      #map {
+        height: 100%;
+        width: 100%;
+      }
+
+      html,
+      body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+
 
   </head>
   <body>
@@ -68,6 +83,7 @@
       var requestedData;
       var formButton;
       var markers = [];
+      var map;
       
       var form = document.createElement("form");
       form.classList.add("mt-5")
@@ -95,7 +111,9 @@
       
 
       //------------------------FUNCTIONS------------------------
-      var displayAbout = function() {
+
+      //Displays the information about the application
+      var displayAboutPage = function() {
         removeAllChildNodes(bodyContainer);
         if(body.contains(mapDiv)) {
           body.removeChild(mapDiv);
@@ -104,11 +122,11 @@
         var aboutInfo = document.createElement("div");
         aboutInfo.innerHTML = `<div>
         <p class="fs-1 text-center">Information About the Application</p>
-        <p class="fs-5">This application was created by Martin Miloslavich. He had used Google Maps API, Bootstrap, HTML5, CSS3, and Javascript to build it.</p>
+        <p class="fs-5">This application was created by Martin Miloslavich. It was built using Google Maps API, Bootstrap, HTML5, CSS3, and Javascript to build it.</p>
         </div>`;
         bodyContainer.appendChild(aboutInfo);
       }
-
+      //loads the home screen on the app
        var loadHomeScreen = function() {
         removeAllChildNodes(bodyContainer);
         if(body.contains(mapDiv)) {
@@ -128,12 +146,14 @@
         loadHomeScreen();
       }
 
+      //deletes all of the child nodes
       var removeAllChildNodes = function (parent) {
         while (parent.firstChild) {
           parent.removeChild(parent.firstChild);
         }
       }
 
+      //takes in the sqr feet and neighborhood from the user
       var handleForm = function() {
         var [url, maxSQFT] = returnURL();
         removeAllChildNodes(bodyContainer);
@@ -157,7 +177,8 @@
           });
       }
 
-      var addForm = function() {
+      //gets the information from the form page
+      var formPage = function() {
         activateNavItem(form);
         removeAllChildNodes(bodyContainer);
         bodyContainer.appendChild(form);
@@ -181,7 +202,7 @@
         });
       }
       
-      
+      //displays all of the land that was found in the form page
       var displayCards = function() {
         removeAllChildNodes(bodyContainer);
         
@@ -201,13 +222,8 @@
           })
         }
       }
-      
-      var setMarkers = function() {
-        for(let marker of markers) {
-          marker.setMap(map);
-        }
-      }
 
+      //lists an item as active
       var activateNavItem = function(item) {
         var navItems = document.querySelectorAll(".nav-link");
         item.classList.add("active");
@@ -222,12 +238,19 @@
         return ["https://data.cityofchicago.org/resource/aksk-kvfp.json" + "?" + "community_area_name=" + document.querySelector("select").value, document.querySelector("#sq_ft").value]
       }
 
-      
-      var initMap = function() {
+      //sets the markers on the map
+      var setMarkers = function() {
+        for(let marker of markers) {
+          marker.setMap(map);
+        }
+      }
+
+      //displays the map of Chicago
+      var initializeMap = function() {
         removeAllChildNodes(bodyContainer);
         activateNavItem(mapNavItem);
         document.querySelector("body").appendChild(mapDiv);
-        let map = new google.maps.Map(mapDiv, {
+        map = new google.maps.Map(mapDiv, {
           center: { lat: 41.8781, lng: -87.6298 },
           zoom: 11,
         });
@@ -249,8 +272,6 @@
                 position: {lat: parseFloat(land["latitude"]), lng: parseFloat(land["longitude"])},
                 map,
                 title: land["address"],
-                position : position,
-                setMap : map
               });
               markers.push(marker);
               marker.addListener("click", () => {
@@ -264,12 +285,12 @@
       }
 
           
-      
+      //--------------EVENT LISTENERS----------------//
       dataNavItem.addEventListener("click", displayCards);
-      aboutNavItem.addEventListener("click", displayAbout);      
+      aboutNavItem.addEventListener("click", displayAboutPage);
       homeNavItem.addEventListener("click", loadHomeScreen);
-      formNavItem.addEventListener("click", addForm);
-      mapNavItem.addEventListener("click", initMap);
+      formNavItem.addEventListener("click", formPage);
+      mapNavItem.addEventListener("click", initializeMap);
      </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
