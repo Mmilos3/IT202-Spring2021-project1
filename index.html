@@ -9,13 +9,14 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
 
     <title>Project 1</title>
-
-     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0cy9QJ-JUEyB5lERlfQpEcpbJmbByoJM&v=weekly"></script> 
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=default"></script>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyC0cy9QJ-JUEyB5lERlfQpEcpbJmbByoJM&v=weekly"></script>
+      
 
   </head>
   <body>
     <h1 style="color:blue;">Chicago City-Owned Land Inventory</h1>
-    <!-- Navigation bar -->
+    <!-- Nav bar -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
         <div class="container-fluid">
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -51,83 +52,78 @@
     
     <script>
       
-      //setting variables for nav buttons
-      var bodCon = document.querySelector("body-container");
-      var bod = document.querySelector("body");
-      var dataNI = document.querySelector("#data-nav-item");
-      var mapNI = document.querySelector("#map-nav-item");
-      var aboutNI = document.querySelector("#about-nav-item");
-      var homeNI = document.querySelector("#home-nav-item");
-      var formNI = document.querySelector("#form-nav-item");
+     //------------VARIABLES-------------//
 
-      //variables for map
-      var area = document.querySelector("#area-select");
+      var homeNavItem = document.querySelector("#home-nav-item");
+      var formNavItem = document.querySelector("#form-nav-item");
+      var dataNavItem = document.querySelector("#data-nav-item");
+      var mapNavItem = document.querySelector("#map-nav-item");
+      var aboutNavItem = document.querySelector("#about-nav-item");
+      var bodyContainer = document.querySelector("#body-container");
+      var body = document.querySelector("body");
+      
+      var areaSelect = document.querySelector("#area-select");
       var mapDiv = document.createElement("div");
       mapDiv.id = "map";
-      var inData;
+      var requestedData;
       var formButton;
       var markers = [];
-
+      
       var form = document.createElement("form");
       form.classList.add("mt-5")
       form.innerHTML = `
         <div class="mb-3">
-          <label for="sq_ft" class="form-label">Max Square Feet</label>
+          <label for="sq_ft" class="form-label">Maximum square feet</label>
           <input id="sq_ft" type="text" class="form-control">
         </div>
-        <label for="area-select" class="form-label">Select a Neighborhood Name</label>
+        <label for="area-select" class="form-label">Select a community area name</label>
         <select id="area-select" class="form-select" aria-label="Default select example">
         </select>
-        <button id="form-button" type="Enter" class="mt-3 btn btn-primary">Submit</button>`;
-
+        <button id="form-button" type="submit" class="mt-3 btn btn-primary">Submit</button>`;
+      
       var card = document.createElement("div");
       card.classList.add("row");
       card.innerHTML = `
-        <div class="mb-3 card" >
-          <div class="card-body">
-            <h5 class="card-title"></h5>
-            <h6 class="card-subtitle mb-2 text-muted"></h6>
-            <p class="card-text"></p>
-          </div>
-        </div>`
+      <div class="mb-3 card" >
+        <div class="card-body">
+          <h5 class="card-title"></h5>
+          <h6 class="card-subtitle mb-2 text-muted"></h6>
+          <p class="card-text"></p>
+        </div>
+      </div>`
 
-//------------------------FUNCTIONS------------------------//
+      
 
-    var displayAbout = function() {
-      removeAllChildNodes(bodCon);
-      if(bod.contains(mapDiv)) {
-        bod.removeChild(mapDiv);
-      }
-      activateNavItem(aboutNI);
-      var aboutInfo = document.createElement("div");
-      aboutInfo.innerHTML = `<div>
-      <p class="fs-1 text-center">Information about the App</p>
-      <p class="fs-5">This applicatione was built by Martin Miloslavich. It was created using Google Maps API, Bootstrap, HTML5, CSS3, and JavaScript.</p>
-      </div>`;
-      bodCon.appendChild(aboutInfo);
-    }
-
-     var displayCards = function() {
-        removeAllChildNodes(bodCon);
-        
-        if(bod.contains(mapDiv)) {
-          bod.removeChild(mapDiv);
+      //------------------------FUNCTIONS------------------------
+      var displayAbout = function() {
+        removeAllChildNodes(bodyContainer);
+        if(body.contains(mapDiv)) {
+          body.removeChild(mapDiv);
         }
-
-        if(requestedData) {
-          requestedData.then( filteredData => {
-            for(let land of filteredData) {
-              let clone = card.cloneNode(true);
-              clone.querySelector(".card-subtitle").innerText = land["community_area_name"];
-              clone.querySelector(".card-title").innerText = land["address"] + " - " + land["sq_ft"] + " Sq ft";
-              clone.querySelector(".card-text").innerText = land["pin"];
-              bodCon.appendChild(clone);
-            }
-          })
-        }
+        activateNavItem(aboutNavItem);
+        var aboutInfo = document.createElement("div");
+        aboutInfo.innerHTML = `<div>
+        <p class="fs-1 text-center">Information about the App</p>
+        <p class="fs-5">This application was created by Martin Miloslavich. He had used Google Maps API, Bootstrap, HTML5, CSS3, and Javascript to build it.</p>
+        </div>`;
+        bodyContainer.appendChild(aboutInfo);
       }
 
-     
+       var loadHomeScreen = function() {
+        removeAllChildNodes(bodyContainer);
+        if(body.contains(mapDiv)) {
+          body.removeChild(mapDiv);
+        }
+        activateNavItem(homeNavItem);
+        var description = document.createElement("p");
+        description.innerHTML = `<div>
+        <p class="mt-5 fs-1 text-center">About</h1>
+        <p class="fs-5">This application can be used to search for land in a specific Chicago neighborhood, filtered by the selected square footage. The form page will allow the user to choose the square footage and neighborhood that they would like. The data will be shown on the data page and the land will be shown on the map. 
+        </p>
+      </div>`
+        bodyContainer.appendChild(description);
+      }
+      
       window.onload = function() {
         loadHomeScreen();
       }
@@ -139,35 +135,32 @@
       }
 
       var handleForm = function() {
-          
         var [url, maxSQFT] = returnURL();
-        removeAllChildNodes(bodCon);
-        activateNavItem(dataNI);
+        removeAllChildNodes(bodyContainer);
+        activateNavItem(dataNavItem);
         
         requestedData = fetch(url)
           .then(response => response.json())
           .then(data => {
-            
             let filteredData = data.filter( function(land) {
               return parseInt(land["sq_ft"]) <= maxSQFT;
             });
-            
             for(let land of filteredData) {
               let clone = card.cloneNode(true);
               clone.querySelector(".card-subtitle").innerText = land["community_area_name"];
               clone.querySelector(".card-title").innerText = land["address"] + " - " + land["sq_ft"] + " Sq ft";
               clone.querySelector(".card-text").innerText = land["pin"];
-              bodCon.appendChild(clone);
+              bodyContainer.appendChild(clone);
             }
 
             return filteredData;
           });
       }
 
-      var addForm = function () {
+      var addForm = function() {
         activateNavItem(form);
-        removeAllChildNodes(bodCon);
-        bodCon.appendChild(form);
+        removeAllChildNodes(bodyContainer);
+        bodyContainer.appendChild(form);
         formButton = document.querySelector("#form-button");
         formButton.addEventListener("click", handleForm);
 
@@ -180,15 +173,42 @@
           });
 
           for(let area of data) {
-            let option = document.createElement("option");
+            let opt = document.createElement("option");
             let areaSelect = document.querySelector("#area-select")
-            option.innerText = area["community_area_name"];
-            areaSelect.appendChild(option);
+            opt.innerText = area["community_area_name"];
+            areaSelect.appendChild(opt);
           }
         });
       }
+      
+      
+      var displayCards = function() {
+        removeAllChildNodes(bodyContainer);
+        
+        if(body.contains(mapDiv)) {
+          body.removeChild(mapDiv);
+        }
 
-      var activateNavItem = function (item) {
+        if(requestedData) {
+          requestedData.then( filteredData => {
+            for(let land of filteredData) {
+              let clone = card.cloneNode(true);
+              clone.querySelector(".card-subtitle").innerText = land["community_area_name"];
+              clone.querySelector(".card-title").innerText = land["address"] + " - " + land["sq_ft"] + " Sq ft";
+              clone.querySelector(".card-text").innerText = land["pin"];
+              bodyContainer.appendChild(clone);
+            }
+          })
+        }
+      }
+      
+      var setMarkers = function() {
+        for(let marker of markers) {
+          marker.setMap(map);
+        }
+      }
+
+      var activateNavItem = function(item) {
         var navItems = document.querySelectorAll(".nav-link");
         item.classList.add("active");
         navItems.forEach(i => {
@@ -197,22 +217,21 @@
           }
         });
       }
-      
-       var setMarkers = function() {
-        for(let marker of markers) {
-          marker.setMap(map);
-        }
+
+      var returnURL = function() {
+        return ["https://data.cityofchicago.org/resource/aksk-kvfp.json" + "?" + "community_area_name=" + document.querySelector("select").value, document.querySelector("#sq_ft").value]
       }
+
       
-      var initMap = function () {
-        removeAllChildNodes(bodCon);
-        activateNavItem(mapNI);
+      var initMap = function() {
+        removeAllChildNodes(bodyContainer);
+        activateNavItem(mapNavItem);
         document.querySelector("body").appendChild(mapDiv);
         let map = new google.maps.Map(mapDiv, {
           center: { lat: 41.8781, lng: -87.6298 },
           zoom: 11,
         });
-          
+
         if(requestedData) {
           requestedData
           .then(filteredData => {
@@ -242,42 +261,16 @@
         }
       }
 
-      var loadHomeScreen = function () {
-        removeAllChildNodes(bodCon);
-        if(bod.contains(mapDiv)) {
-          bod.removeChild(mapDiv);
-        }
-        activateNavItem(homeNI);
           
-        var description = document.createElement("p");
-        description.innerHTML = `<div>
-        <p class="mt-5 fs-1 text-center">Chicago Land Finder</h1>
-        <p class="fs-5">This application lets the user find land in Chicago based on the size and the neighborhood. 
-          The user can click on the form button to be able to choose the size in square feet of the land and also the neighborhood. The pieces of land will then show up in the Data tab. The user will also be able to see the land on the map with markers. 
-        </p>
-      </div>`
-        bodCon.appendChild(description);
-      }
-
-      var returnURL = function () {
-        return ["https://data.cityofchicago.org/resource/aksk-kvfp.json" + "?" + "community_area_name=" + document.querySelector("select").value, document.querySelector("#sq_ft").value]
-      } 
-
-      homeNI.addEventListener("click", loadHomeScreen);
-
-      formNI.addEventListener("click", addForm);
       
-      mapNI.addEventListener("click", initMap);
-
-      dataNI.addEventListener("click", displayCards);
-
-      aboutNI.addEventListener("click", displayAbout);
+      dataNavItem.addEventListener("click", displayCards);
+      aboutNavItem.addEventListener("click", displayAbout);      
+      homeNavItem.addEventListener("click", loadHomeScreen);
+      formNavItem.addEventListener("click", addForm);
+      mapNavItem.addEventListener("click", initMap);
      </script>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/js/bootstrap.bundle.min.js" integrity="sha384-b5kHyXgcpbZJO/tY9Ul7kGkf1S0CWuKcCD38l8YkeH8z8QjE0GmW1gYU5S9FOnJ0" crossorigin="anonymous"></script>
-
-   
-
 
     
   </body>
