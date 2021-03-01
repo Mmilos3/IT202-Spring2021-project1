@@ -73,13 +73,13 @@
       form.classList.add("mt-5")
       form.innerHTML = `
         <div class="mb-3">
-          <label for="sq_ft" class="form-label">Maximum square feet</label>
+          <label for="sq_ft" class="form-label">Enter Square Footage</label>
           <input id="sq_ft" type="text" class="form-control">
         </div>
-        <label for="area-select" class="form-label">Select a community area name</label>
+        <label for="area-select" class="form-label">Choose a Neighborhood </label>
         <select id="area-select" class="form-select" aria-label="Default select example">
         </select>
-        <button id="form-button" type="submit" class="mt-3 btn btn-primary">Submit</button>`;
+        <button id="form-button" type="submit" class="mt-3 btn btn-primary">Enter</button>`;
       
       var card = document.createElement("div");
       card.classList.add("row");
@@ -103,7 +103,7 @@
         activateNavItem(aboutNavItem);
         var aboutInfo = document.createElement("div");
         aboutInfo.innerHTML = `<div>
-        <p class="fs-1 text-center">Information about the App</p>
+        <p class="fs-1 text-center">Information About the Application</p>
         <p class="fs-5">This application was created by Martin Miloslavich. He had used Google Maps API, Bootstrap, HTML5, CSS3, and Javascript to build it.</p>
         </div>`;
         bodyContainer.appendChild(aboutInfo);
@@ -249,6 +249,8 @@
                 position: {lat: parseFloat(land["latitude"]), lng: parseFloat(land["longitude"])},
                 map,
                 title: land["address"],
+                position : position,
+                setMap : map
               });
               markers.push(marker);
               marker.addListener("click", () => {
